@@ -1,5 +1,11 @@
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import type { Snippet } from "@/server/db/schema";
-import { X } from "lucide-react";
 import { useState } from "react";
 
 interface EditModalProps {
@@ -9,6 +15,7 @@ interface EditModalProps {
 	onSaveNew?: (data: { name: string; code: string }) => void;
 	isLoading: boolean;
 	isCreate?: boolean;
+	isOpen: boolean;
 }
 
 export const SnippetModal = ({
@@ -18,6 +25,7 @@ export const SnippetModal = ({
 	onSaveNew,
 	isLoading,
 	isCreate = false,
+	isOpen,
 }: EditModalProps) => {
 	const [name, setName] = useState(snippet?.name || "");
 	const [code, setCode] = useState(snippet?.code || "");
@@ -35,22 +43,15 @@ export const SnippetModal = ({
 	};
 
 	return (
-		<div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-			<div className="bg-zinc-900 rounded-lg w-full max-w-2xl p-6 shadow-xl">
-				<div className="flex justify-between items-center mb-4">
-					<h3 className="text-lg font-medium text-zinc-200">
+		<Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+			<DialogContent className="bg-zinc-900 border-zinc-800 w-full max-w-2xl p-6">
+				<DialogHeader>
+					<DialogTitle className="text-lg font-medium text-zinc-200">
 						{isCreate ? "创建代码片段" : "编辑代码片段"}
-					</h3>
-					<button
-						type="button"
-						onClick={onClose}
-						className="text-zinc-400 hover:text-zinc-200"
-					>
-						<X className="w-5 h-5" />
-					</button>
-				</div>
+					</DialogTitle>
+				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-4">
+				<form onSubmit={handleSubmit} className="space-y-4 mt-4">
 					<div className="space-y-2">
 						<label htmlFor="name" className="text-sm text-zinc-400">
 							标题
@@ -92,7 +93,7 @@ export const SnippetModal = ({
 						</div>
 					)}
 
-					<div className="flex justify-end gap-3 pt-4">
+					<DialogFooter className="pt-4">
 						<button
 							type="button"
 							onClick={onClose}
@@ -107,9 +108,9 @@ export const SnippetModal = ({
 						>
 							{isLoading ? "保存中..." : isCreate ? "创建" : "保存"}
 						</button>
-					</div>
+					</DialogFooter>
 				</form>
-			</div>
-		</div>
+			</DialogContent>
+		</Dialog>
 	);
 };

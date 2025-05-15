@@ -14,7 +14,7 @@ const api = j
 		cors({
 			origin: [
 				"http://localhost:3000",
-				"https://jstack-starter-template.vercel.app",
+				"https://snippets-collection.vercel.app",
 			],
 			allowHeaders: [
 				"x-is-superjson",
