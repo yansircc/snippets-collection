@@ -1,11 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3e5a72ba-0f15-4235-b462-41c0ea056abe",
+  "id": "c7336ebf-9dd8-4469-b495-17297c3c1bc9",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
-    "posts_table": {
-      "name": "posts_table",
+    "snippets_table": {
+      "name": "snippets_table",
       "columns": {
         "id": {
           "name": "id",
@@ -20,6 +20,28 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(SELECT COALESCE(MAX(\"order\") + 1, 0) FROM snippets_table)"
         },
         "createdAt": {
           "name": "createdAt",
@@ -39,10 +61,17 @@
         }
       },
       "indexes": {
-        "Post_name_idx": {
-          "name": "Post_name_idx",
+        "Snippets_name_idx": {
+          "name": "Snippets_name_idx",
           "columns": [
             "name"
+          ],
+          "isUnique": false
+        },
+        "Snippets_order_idx": {
+          "name": "Snippets_order_idx",
+          "columns": [
+            "order"
           ],
           "isUnique": false
         }

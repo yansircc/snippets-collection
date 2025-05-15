@@ -7,6 +7,7 @@ import { j, privateProcedure, publicProcedure } from "../jstack";
 const snippetSchema = z.object({
 	name: z.string().min(1, "标题不能为空"),
 	code: z.string().min(1, "代码不能为空"),
+	description: z.string().optional(),
 });
 
 const snippetIdSchema = z.object({ id: z.number() });

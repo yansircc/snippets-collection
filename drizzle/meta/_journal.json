@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1746271260059,
-      "tag": "0000_graceful_senator_kelly",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1747289371128,
-      "tag": "0001_watery_gressill",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1747292850895,
-      "tag": "0002_fresh_scorpion",
+      "when": 1747308905387,
+      "tag": "0000_clean_miss_america",
       "breakpoints": true
     }
   ]
