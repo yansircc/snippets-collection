@@ -1,4 +1,4 @@
-name: Deploy to Cloudflare Workers # gh variable set -f .env
+name: Deploy to Cloudflare Workers # gh secret set -f .env
 
 on:
   push:
