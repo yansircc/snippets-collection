@@ -146,7 +146,7 @@ export const SnippetModal = ({
 									<FormControl>
 										<Textarea
 											{...field}
-											className="bg-black/50 hover:bg-black/75 focus:bg-black/75 min-h-[200px] p-4 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none font-mono text-sm transition border-zinc-800"
+											className="bg-black/50 hover:bg-black/75 focus:bg-black/75 min-h-[200px] max-h-[400px] overflow-y-auto p-4 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none font-mono text-sm transition border-zinc-800"
 										/>
 									</FormControl>
 									<FormMessage className="text-red-400" />
