@@ -1,0 +1,23 @@
+{
+	"name": "snippets-collection",
+	"main": "src/server/index.ts",
+	"compatibility_date": "2025-02-14",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
+	"placement": {
+		"mode": "smart"
+	},
+	"dev": {
+		"port": 8080
+	},
+	"d1_databases": [
+		{
+			"binding": "D1_DATABASE",
+			"database_id": "6a172d07-ce57-440c-b9b6-308991c95448",
+			"database_name": "SNIPPETS_COLLECTION",
+			"migrations_dir": "./drizzle"
+		}
+	]
+}
