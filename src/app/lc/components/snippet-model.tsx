@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -5,18 +6,49 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
+import {
+	Form,
+	FormControl,
+	FormDescription,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import type { Snippet } from "@/server/db/schema";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
 
 interface EditModalProps {
 	snippet?: Snippet;
 	onClose: () => void;
-	onSave?: (data: { name: string; code: string; order: number }) => void;
-	onSaveNew?: (data: { name: string; code: string }) => void;
+	onSave?: (data: {
+		name: string;
+		description?: string;
+		code: string;
+		order: number;
+	}) => void;
+	onSaveNew?: (data: {
+		name: string;
+		description?: string;
+		code: string;
+	}) => void;
 	isLoading: boolean;
 	isCreate?: boolean;
 	isOpen: boolean;
 }
+
+const formSchema = z.object({
+	name: z.string().min(1, "标题不能为空"),
+	description: z.string().optional(),
+	code: z.string().min(1, "代码不能为空"),
+	order: z.number().int().nonnegative("排序必须是非负整数"),
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 export const SnippetModal = ({
 	snippet,
@@ -27,18 +59,30 @@ export const SnippetModal = ({
 	isCreate = false,
 	isOpen,
 }: EditModalProps) => {
-	const [name, setName] = useState(snippet?.name || "");
-	const [code, setCode] = useState(snippet?.code || "");
-	const [order, setOrder] = useState(snippet?.order || 0);
+	const form = useForm<FormValues>({
+		resolver: zodResolver(formSchema),
+		defaultValues: {
+			name: snippet?.name || "",
+			description: snippet?.description || "",
+			code: snippet?.code || "",
+			order: snippet?.order ?? 0,
+		},
+	});
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		if (!name.trim() || !code.trim()) return;
-
+	const handleSubmit = (values: FormValues) => {
 		if (isCreate && onSaveNew) {
-			onSaveNew({ name, code });
+			onSaveNew({
+				name: values.name,
+				description: values.description,
+				code: values.code,
+			});
 		} else if (onSave) {
-			onSave({ name, code, order });
+			onSave({
+				name: values.name,
+				description: values.description,
+				code: values.code,
+				order: values.order,
+			});
 		}
 	};
 
@@ -51,65 +95,110 @@ export const SnippetModal = ({
 					</DialogTitle>
 				</DialogHeader>
 
-				<form onSubmit={handleSubmit} className="space-y-4 mt-4">
-					<div className="space-y-2">
-						<label htmlFor="name" className="text-sm text-zinc-400">
-							标题
-						</label>
-						<input
-							id="name"
-							type="text"
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							className="w-full rounded-md bg-black/50 hover:bg-black/75 focus:bg-black/75 h-12 px-4 py-2 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none transition"
+				<Form {...form}>
+					<form
+						onSubmit={form.handleSubmit(handleSubmit)}
+						className="space-y-4 mt-4"
+					>
+						<FormField
+							control={form.control}
+							name="name"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-sm text-zinc-400">标题</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											className="bg-black/50 hover:bg-black/75 focus:bg-black/75 h-12 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none transition border-zinc-800"
+										/>
+									</FormControl>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
 						/>
-					</div>
 
-					<div className="space-y-2">
-						<label htmlFor="code" className="text-sm text-zinc-400">
-							代码
-						</label>
-						<textarea
-							id="code"
-							value={code}
-							onChange={(e) => setCode(e.target.value)}
-							className="w-full rounded-md bg-black/50 hover:bg-black/75 focus:bg-black/75 min-h-[200px] p-4 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none font-mono text-sm transition"
+						<FormField
+							control={form.control}
+							name="description"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-sm text-zinc-400">描述</FormLabel>
+									<FormControl>
+										<Input
+											{...field}
+											className="bg-black/50 hover:bg-black/75 focus:bg-black/75 h-12 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none transition border-zinc-800"
+										/>
+									</FormControl>
+									<FormDescription className="text-zinc-500 text-xs">
+										可选的代码片段描述信息
+									</FormDescription>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
 						/>
-					</div>
 
-					{!isCreate && (
-						<div className="space-y-2">
-							<label htmlFor="order" className="text-sm text-zinc-400">
-								排序 (数字越小越靠前)
-							</label>
-							<input
-								id="order"
-								type="number"
-								min="0"
-								value={order}
-								onChange={(e) => setOrder(Number.parseInt(e.target.value) || 0)}
-								className="w-full rounded-md bg-black/50 hover:bg-black/75 focus:bg-black/75 h-12 px-4 py-2 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none transition"
+						<FormField
+							control={form.control}
+							name="code"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel className="text-sm text-zinc-400">代码</FormLabel>
+									<FormControl>
+										<Textarea
+											{...field}
+											className="bg-black/50 hover:bg-black/75 focus:bg-black/75 min-h-[200px] p-4 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none font-mono text-sm transition border-zinc-800"
+										/>
+									</FormControl>
+									<FormMessage className="text-red-400" />
+								</FormItem>
+							)}
+						/>
+
+						{!isCreate && (
+							<FormField
+								control={form.control}
+								name="order"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel className="text-sm text-zinc-400">
+											排序 (数字越小越靠前)
+										</FormLabel>
+										<FormControl>
+											<Input
+												type="number"
+												min="0"
+												{...field}
+												onChange={(e) =>
+													field.onChange(Number.parseInt(e.target.value) || 0)
+												}
+												className="bg-black/50 hover:bg-black/75 focus:bg-black/75 h-12 text-zinc-100 ring-2 ring-transparent focus:ring-zinc-800 focus-visible:outline-none transition border-zinc-800"
+											/>
+										</FormControl>
+										<FormMessage className="text-red-400" />
+									</FormItem>
+								)}
 							/>
-						</div>
-					)}
+						)}
 
-					<DialogFooter className="pt-4">
-						<button
-							type="button"
-							onClick={onClose}
-							className="px-4 py-2 rounded-md bg-zinc-800/50 hover:bg-zinc-800/75 text-zinc-300 transition"
-						>
-							取消
-						</button>
-						<button
-							type="submit"
-							disabled={isLoading || !name.trim() || !code.trim()}
-							className="px-6 py-2 rounded-md bg-gradient-to-tl from-zinc-300 to-zinc-200 text-zinc-800 font-medium hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition"
-						>
-							{isLoading ? "保存中..." : isCreate ? "创建" : "保存"}
-						</button>
-					</DialogFooter>
-				</form>
+						<DialogFooter className="pt-4">
+							<Button
+								type="button"
+								variant="outline"
+								onClick={onClose}
+								className="bg-zinc-800/50 hover:bg-zinc-800/75 text-zinc-300 border-zinc-700"
+							>
+								取消
+							</Button>
+							<Button
+								type="submit"
+								disabled={isLoading || !form.formState.isValid}
+								className="bg-gradient-to-tl from-zinc-300 to-zinc-200 text-zinc-800 font-medium hover:brightness-110 transition"
+							>
+								{isLoading ? "保存中..." : isCreate ? "创建" : "保存"}
+							</Button>
+						</DialogFooter>
+					</form>
+				</Form>
 			</DialogContent>
 		</Dialog>
 	);

@@ -32,7 +32,11 @@ export const useSnippetsManager = () => {
 	const authClient = createAuthClient(getToken);
 
 	// 获取所有代码片段
-	const { data: snippets, isPending: isLoading } = useQuery({
+	const {
+		data: snippets,
+		isPending: isLoading,
+		refetch,
+	} = useQuery({
 		queryKey: ["snippets"],
 		queryFn: async () => {
 			const res = await authClient.snippet.getAll.$get();
@@ -43,14 +47,16 @@ export const useSnippetsManager = () => {
 
 	// 创建代码片段
 	const { mutate: createSnippet, isPending: isCreating } = useMutation({
-		mutationFn: async (data: { name: string; code: string }) => {
+		mutationFn: async (data: {
+			name: string;
+			code: string;
+			description?: string;
+		}) => {
 			const res = await authClient.snippet.create.$post(data);
 			return await res.json();
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["snippets", "public-snippets"],
-			});
+		onSuccess: async () => {
+			await refetch();
 			setShowCreateModal(false);
 		},
 	});
@@ -60,16 +66,15 @@ export const useSnippetsManager = () => {
 		mutationFn: async (data: {
 			id: number;
 			name: string;
+			description?: string;
 			code: string;
 			order: number;
 		}) => {
 			const res = await authClient.snippet.update.$post(data);
 			return await res.json();
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["snippets", "public-snippets"],
-			});
+		onSuccess: async () => {
+			await refetch();
 			setEditingSnippet(null);
 		},
 	});
@@ -80,19 +85,22 @@ export const useSnippetsManager = () => {
 			const res = await authClient.snippet.delete.$post({ id });
 			return await res.json();
 		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: ["snippets", "public-snippets"],
-			});
+		onSuccess: async () => {
+			await refetch();
 		},
 	});
 
-	const handleCreate = (data: { name: string; code: string }) => {
+	const handleCreate = (data: {
+		name: string;
+		description?: string;
+		code: string;
+	}) => {
 		createSnippet(data);
 	};
 
 	const handleUpdate = (data: {
 		name: string;
+		description?: string;
 		code: string;
 		order: number;
 	}) => {
@@ -114,5 +122,6 @@ export const useSnippetsManager = () => {
 		handleCreate,
 		handleUpdate,
 		deleteSnippet: (id: number) => deleteSnippet({ id }),
+		refetch, // 导出 refetch 函数以便在需要时手动刷新
 	};
 };
