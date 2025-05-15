@@ -1,8 +1,8 @@
 "use client";
 
+import type { Snippet } from "@/server/db/schema";
 import { Loader2, Plus } from "lucide-react";
 import { useSnippetsManager } from "../hooks";
-import type { Snippet } from "../types";
 import { SnippetCard } from "./snippet-card";
 import { SnippetModal } from "./snippet-model";
 

@@ -1,6 +1,6 @@
+import type { Snippet } from "@/server/db/schema";
 import { Check, ClipboardCopy, Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { Snippet } from "../types";
 
 // 代码片段卡片组件
 export const SnippetCard = ({
@@ -42,7 +42,9 @@ export const SnippetCard = ({
 						<h3 className="text-sm font-medium text-zinc-200 line-clamp-2">
 							{snippet.name}
 						</h3>
-						<span className="text-xs text-zinc-500 mt-1">点击复制</span>
+						<span className="text-xs text-zinc-500 mt-1">
+							{snippet.description || "暂无描述"}
+						</span>
 					</>
 				)}
 			</button>

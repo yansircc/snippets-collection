@@ -2,24 +2,24 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { navItems } from "./config/navigation";
 
-export default async function Home() {
+export default function Home() {
 	return (
-		<main className="flex bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950 flex-col items-center justify-center relative isolate min-h-screen">
+		<div className="flex flex-col items-center justify-center w-full h-full relative">
+			{/* 噪点背景 */}
 			<div className="absolute inset-0 -z-10 opacity-50 mix-blend-soft-light bg-[url('/noise.svg')] [mask-image:radial-gradient(ellipse_at_center,black,transparent)]" />
-			<div className="container flex flex-col items-center justify-center gap-8 px-4 py-16">
+
+			<div className="container flex flex-col items-center justify-center gap-6 px-4 py-12">
 				<h1
 					className={cn(
-						"inline-flex tracking-tight flex-col gap-1 transition text-center",
-						"font-display text-4xl sm:text-5xl md:text-6xl font-semibold leading-none lg:text-[4rem]",
-						"bg-gradient-to-r from-20% bg-clip-text text-transparent",
-						"from-white to-gray-50",
+						"text-4xl sm:text-5xl md:text-6xl font-semibold leading-none",
+						"bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent text-center",
 					)}
 				>
-					<span>Snippets Collection</span>
+					Snippets Collection
 				</h1>
 
-				<p className="text-[#ececf399] text-lg/7 md:text-xl/8 text-pretty sm:text-wrap sm:text-center text-center mb-8">
-					Easily collect and manage your snippets.
+				<p className="text-zinc-400 text-lg md:text-xl text-center max-w-2xl mb-8">
+					轻松收集和管理你的代码片段
 				</p>
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-5xl">
@@ -39,6 +39,6 @@ export default async function Home() {
 					))}
 				</div>
 			</div>
-		</main>
+		</div>
 	);
 }

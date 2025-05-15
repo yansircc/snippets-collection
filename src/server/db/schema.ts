@@ -14,6 +14,7 @@ export const snippets = sqliteTable(
 	{
 		id: integer("id").primaryKey(),
 		name: text("name").notNull(),
+		description: text("description"),
 		code: text("code").notNull(),
 		order: integer("order")
 			.notNull()
@@ -30,3 +31,5 @@ export const snippets = sqliteTable(
 		index("Snippets_order_idx").on(table.order),
 	],
 );
+
+export type Snippet = typeof snippets.$inferSelect;

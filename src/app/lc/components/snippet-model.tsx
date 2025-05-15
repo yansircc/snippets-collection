@@ -1,6 +1,6 @@
+import type { Snippet } from "@/server/db/schema";
 import { X } from "lucide-react";
 import { useState } from "react";
-import type { Snippet } from "../types";
 
 interface EditModalProps {
 	snippet?: Snippet;

@@ -1,8 +1,8 @@
 import { createAuthClient } from "@/lib/client";
+import type { Snippet } from "@/server/db/schema";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import type { Snippet } from "./types";
 
 // 公开代码片段Hook
 export const usePublicSnippets = () => {
@@ -37,7 +37,7 @@ export const useSnippetsManager = () => {
 		queryFn: async () => {
 			const res = await authClient.snippet.getAll.$get();
 			const data = await res.json();
-			return data.sort((a: Snippet, b: Snippet) => a.order - b.order);
+			return data;
 		},
 	});
 

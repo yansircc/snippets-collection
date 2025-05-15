@@ -1,6 +1,6 @@
+import type { Snippet } from "@/server/db/schema";
 import { Loader2 } from "lucide-react";
 import { usePublicSnippets } from "../hooks";
-import type { Snippet } from "../types";
 import { SnippetCard } from "./snippet-card";
 
 // 公共展示组件
