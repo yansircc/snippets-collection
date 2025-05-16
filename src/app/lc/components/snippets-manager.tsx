@@ -1,6 +1,7 @@
 "use client";
 
 import type { Snippet } from "@/server/db/schema";
+import { useAuth } from "@clerk/nextjs";
 import { Loader2, Plus } from "lucide-react";
 import { useSnippetsManager } from "../hooks";
 import { SnippetCard } from "./snippet-card";
@@ -28,6 +29,7 @@ const CreateSnippetCard = ({
 
 // 管理组件
 export const SnippetsManager = () => {
+	const { isSignedIn } = useAuth();
 	const {
 		snippets,
 		isLoading,
@@ -54,7 +56,9 @@ export const SnippetsManager = () => {
 		return (
 			<div className="flex flex-col items-center justify-center gap-4">
 				<p className="text-zinc-400 text-center">暂无代码片段</p>
-				<CreateSnippetCard onClick={() => setShowCreateModal(true)} />
+				{isSignedIn && (
+					<CreateSnippetCard onClick={() => setShowCreateModal(true)} />
+				)}
 				<SnippetModal
 					onClose={() => setShowCreateModal(false)}
 					onSaveNew={handleCreate}
@@ -75,10 +79,12 @@ export const SnippetsManager = () => {
 						snippet={snippet}
 						onEdit={setEditingSnippet}
 						onDelete={deleteSnippet}
-						isAdmin
+						isAdmin={!!isSignedIn}
 					/>
 				))}
-				<CreateSnippetCard onClick={() => setShowCreateModal(true)} />
+				{isSignedIn && (
+					<CreateSnippetCard onClick={() => setShowCreateModal(true)} />
+				)}
 			</div>
 
 			{editingSnippet && (

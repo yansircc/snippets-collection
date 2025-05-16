@@ -5,7 +5,7 @@ import { SnippetCard } from "./snippet-card";
 
 // 公共展示组件
 export const PublicSnippets = () => {
-	const { snippets, isLoading } = usePublicSnippets();
+	const { snippets, isLoading, isLoggedIn } = usePublicSnippets();
 
 	if (isLoading) {
 		return (
@@ -22,7 +22,7 @@ export const PublicSnippets = () => {
 	return (
 		<div className="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 w-full">
 			{snippets.map((snippet: Snippet) => (
-				<SnippetCard key={snippet.id} snippet={snippet} />
+				<SnippetCard key={snippet.id} snippet={snippet} isAdmin={isLoggedIn} />
 			))}
 		</div>
 	);

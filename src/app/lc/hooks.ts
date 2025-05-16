@@ -7,6 +7,7 @@ import { useState } from "react";
 // 公开代码片段Hook
 export const usePublicSnippets = () => {
 	const authClient = createAuthClient(async () => null);
+	const { isSignedIn } = useAuth();
 
 	const { data: snippets, isPending: isLoading } = useQuery({
 		queryKey: ["public-snippets"],
@@ -19,6 +20,7 @@ export const usePublicSnippets = () => {
 	return {
 		snippets,
 		isLoading,
+		isLoggedIn: !!isSignedIn,
 	};
 };
 
@@ -28,7 +30,7 @@ export const useSnippetsManager = () => {
 	const [showCreateModal, setShowCreateModal] = useState(false);
 
 	const queryClient = useQueryClient();
-	const { getToken } = useAuth();
+	const { getToken, isSignedIn } = useAuth();
 	const authClient = createAuthClient(getToken);
 
 	// 获取所有代码片段
